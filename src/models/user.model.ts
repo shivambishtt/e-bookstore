@@ -3,8 +3,12 @@ import bcrypt from "bcrypt"
 
 export interface IUser {
     email: string,
-    password: string,
     username: string,
+    password: string,
+    role: "user" | "admin",
+    _id?: mongoose.Types.ObjectId,
+    createdAt?: Date,
+    updatedAt?: Date
 }
 
 const userSchema = new Schema<IUser>({
@@ -13,5 +17,13 @@ const userSchema = new Schema<IUser>({
     role: { type: String, enum: ["USER", "ADMIN"], default: "user" },
 }, { timestamps: true })
 
-const user = mongoose.model?.User || mongoose.model<IUser>("User", userSchema)
+
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10)
+    }
+    next(); 
+})
+
+const User = mongoose.model?.User || mongoose.model<IUser>("User", userSchema)
 export default user
