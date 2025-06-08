@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt"
 
 export interface IProduct {
     productType: string,
@@ -17,14 +16,18 @@ export const imageVariationSchema = new Schema({
         min: 0
     },
     license: {
-        type: String
+        type: String,
+        required: true,
+        enum: ["personal", "commercial"]
     }
-
 })
 export const ProductSchema = new Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    imageurl: { type: String, required: true },
+    variants: [imageVariationSchema]
+}, { timestamps: true })
 
-})
 
 
-
-const User = mongoose.models?.Product || mongoose.model<IProduct>("Product", ProductSchema)
+const Product = mongoose.models?.Product || mongoose.model<IProduct>("Product", ProductSchema)
