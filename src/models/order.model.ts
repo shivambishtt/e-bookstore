@@ -1,5 +1,34 @@
 import mongoose, { Schema } from "mongoose";
 
+import { ImageVariant, ImageVariantType } from "./product.model";
+
+interface PopulatedUser {
+    _id: mongoose.Types.ObjectId;
+    email: string;
+}
+
+interface PopulatedProduct {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    imageUrl: string;
+}
+
+export interface IOrder {
+    _id?: mongoose.Types.ObjectId;
+    userId: mongoose.Types.ObjectId | PopulatedUser;
+    productId: mongoose.Types.ObjectId | PopulatedProduct;
+    variant: ImageVariant;
+    razorpayOrderId: string;
+    razorpayPaymentId?: string;
+    amount: number;
+    status: "pending" | "completed" | "failed";
+    downloadUrl?: string;
+    previewUrl?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+
 const orderSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
@@ -14,7 +43,8 @@ const orderSchema = new Schema({
         type: {
             type: String,
             required: true,
-            enum: ["SQUARE", "WIDE PORTRAIT"]
+            enum: ["SQUARE", "WIDE", "PORTRAIT"] as ImageVariantType[],
+            set: (v: string) => v.toUpperCase(),
         },
         price: {
             type: Number,
