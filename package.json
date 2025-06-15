@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "imagekit": "^6.0.0",
     "mongoose": "^8.15.1",
     "next": "15.3.2",
     "react": "^19.0.0",
