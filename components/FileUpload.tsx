@@ -30,8 +30,19 @@ function FileUpload({ onSuccess }: { onSuccess: (response: IKUploadResponse) => 
                 onUploadStart={handleStartUpload}
                 validateFile={(file: File) => {
                     const validTypes = ["image/png", "image/jpeg", "image/webp"]
+                    if (!validTypes.includes(file.type)) {
+                        setError("Invalid File Type")
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        setError("Maximum file size 5 MB")
+                    }
+                    return true
+
                 }}
             />
+            {uploading && <p className="text-sm bg-gray-500">Uploading...</p>}
+            {error && <p className="text-sm bg-red-500">{error}</p>}
         </div>
     )
 }
