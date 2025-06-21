@@ -1,5 +1,5 @@
 import { connectDB } from "@/db/db";
-import Product from "@/models/product.model";
+import Product, { IProduct } from "@/models/product.model";
 import { authOptions } from "@/utils/auth";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -20,9 +20,11 @@ export async function GET() {
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session || session.user.role !== "admin") {
-            return
+        if (!session || session.user?.role !== "admin") {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
+        await connectDB()
+        const body: IProduct = await request.json()
     } catch (error) {
 
     }
