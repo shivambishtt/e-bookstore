@@ -25,7 +25,13 @@ export async function POST(request: NextRequest) {
         }
         await connectDB()
         const body: IProduct = await request.json()
+        if (!body.name || !body.description || !body.imageURL) {
+            return NextResponse.json({ error: "All fields are required" }, { status: 400 })
+        }
+        const newProduct = await Product.create(body)
+        return NextResponse.json({ newProduct }, { status: 201 })
     } catch (error) {
-
+        console.error(error)
+        return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
     }
 }
