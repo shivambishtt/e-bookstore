@@ -29,8 +29,7 @@ export async function POST(request: NextRequest) {
                     { path: "userId", select: "email" }
                 ])
             if (order) {
-                const user = order.userId;
-
+                
             }
         }
     } catch (error) {
