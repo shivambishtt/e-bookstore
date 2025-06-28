@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto"
 import { connectDB } from "@/db/db";
 import Order from "@/models/order.model";
-import nodemailer from "nodemailer"
+import { resend } from "@/utils/resend";
+import Emailtemplate from "../../../emails/Emailtemplate";
 
 export async function POST(request: NextRequest) {
     try {
@@ -29,10 +30,18 @@ export async function POST(request: NextRequest) {
                     { path: "userId", select: "email" }
                 ])
             if (order) {
-                
+                await resend.emails.send({
+                    from: "E-book store <no-reply@e-book>",
+                    to: order.userId.email,
+                    subject: "Order Completed",
+                    react: Emailtemplate({ username: order.userId.username, order: order.productId.name })
+                })
             }
         }
+        return NextResponse.json({ message: "Success" }, { status: 200 })
     } catch (error) {
+        console.log(error);
+        NextResponse.json({ error: "Something went wrong" }, { status: 500 })
 
     }
 }
